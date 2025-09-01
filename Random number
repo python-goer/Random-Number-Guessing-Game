@@ -1,0 +1,95 @@
+from random import randint as rnd
+default_lives = 5
+play = False
+amount_of_guesses = 0
+
+# start
+play = input("Would you like to play a game? ").strip().capitalize()
+if play == "No" or play == "N":
+    play = False
+    print("Okay")
+elif play == "Yes" or play == "Y":
+    play = True
+else:
+    print("Invalid command.")
+
+# lives
+lives_options = input("Would you like to have limited lives? ").strip().capitalize()
+while lives_options != "":
+    if lives_options == "Y" or lives_options == "Yes":
+        random_or_specified = input("Would you like to choose your amount of lives or get a random amount? Type \"R\" for a random amount or \"S\" for a specified amount ").strip().capitalize()
+        if random_or_specified == "R" or random_or_specified == "Random":
+            range_options = input("Would you like to choose the range or have the default range of 5 to 12? Type \"C\" for a chosen range or \"D\" for the default range ").strip().capitalize()
+            if range_options == "C" or range_options == "Choose" or range_options == "Chosen":
+                try:
+                    minimum_choice_range = int(input("Input the minimum number for your range: "))
+                    maximum_choice_range = int(input("Input the maximum number for your range: "))
+                    if minimum_choice_range > 0 and maximum_choice_range > minimum_choice_range:
+                        lives = rnd(minimum_choice_range, maximum_choice_range)
+                        break
+                    else:
+                        print("Please enter a valid range")
+                except ValueError:
+                    print("Enter a valid number")
+            if range_options == "D" or range_options == "Default":
+                number_to_guess = rnd(5, 12)
+                break
+        if random_or_specified == "S" or random_or_specified == "Specified":
+            default_or_choose = input("Would you like to have the default amount of lives (5) or would you like to choose your amount? Type \"D\" for a default amount or \"C\" to choose your own amount ").strip().capitalize()
+            if default_or_choose == "D" or default_or_choose == "Default":
+                lives = default_lives
+            try:
+                if default_or_choose == "C" or default_or_choose == "Choose" or default_or_choose == "Chosen":
+                    default_lives = int(input("Enter the number of lives you want to have: "))
+            except ValueError:
+                print("Enter a real number.")
+    elif lives_options == "N" or lives_options == "No":
+        lives = -1
+        break
+    else:
+        print("Invalid command")
+
+
+# game functionality
+def rand_numb():
+    return rnd(1, 100)
+while play == True:
+    number_to_guess = rand_numb()
+    while True:
+        try:
+            guess = int(input("Enter a number 1-100 "))
+            if guess < number_to_guess:
+                print("Too low!")
+                lives -= 1
+                amount_of_guesses += 1
+                if lives_options == "Y" or lives_options == "Yes":
+                    print(f"You have {lives} lives left")
+            if guess > number_to_guess:
+                print("Too high!")
+                lives -= 1
+                if lives_options == "Y" or lives_options == "Yes":
+                    print(f"You have {lives} lives left")
+                amount_of_guesses += 1
+            if guess == number_to_guess:
+                print("You win!", end = " ")
+                amount_of_guesses += 1
+                if amount_of_guesses > 1:
+                    print(f"You won in {amount_of_guesses} guesses.")
+                else:
+                    print(f"Wow! You won in {amount_of_guesses} guess!")
+                play = input("Would you like to play again? ").strip().capitalize()
+                if play == "No" or play == "N":
+                    play = False
+                    break
+                if play == "Yes" or play == "Y":
+                    amount_of_guesses = 0
+                    lives = default_lives
+                    number_to_guess = rand_numb()
+            if guess < 1 or guess > 100:
+                print("Enter a valid number, 1 through 100")
+            if lives == 0:
+                print("You lose!")
+                play = False
+                break
+        except ValueError:
+            print("Enter a number")
